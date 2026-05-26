@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensiPro iOS - O App de Sensibilidade</title>
+    <style>
+        /* ESTILIZAÇÃO (CSS) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121214;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #e51c44;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #a8a8b3;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            background-color: #1a1a1e;
+            border: 1px solid #29292e;
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .secao {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #a8a8b3;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: #29292e;
+            border: 1px solid #323238;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: #e51c44;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #e51c44;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #c6173a;
+        }
+
+        .resultado {
+            margin-top: 25px;
+            background-color: #121214;
+            border: 1px solid #29292e;
+            border-radius: 10px;
+            padding: 20px;
+            display: none; /* Escondido até o clique */
+        }
+
+        .resultado h3 {
+            color: #e51c44;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .linha-sensi {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1e;
+        }
+
+        .linha-sensi:last-child {
+            border-bottom: none;
+        }
+
+        .valor {
+            font-weight: bold;
+            color: #e51c44;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #7c7c8a;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SensiPro iOS</h1>
+        <p>Calcule a sensibilidade ideal para o seu jogo</p>
+    </header>
+
+    <div class="container">
+        <div class="secao">
+            <label for="modelo">Modelo do iPhone</label>
+            <select id="modelo">
+                <option value="xr">iPhone XR</option>
+                <option value="11">iPhone 11</option>
+                <option value="12">iPhone 12 / 13</option>
+                <option value="14">iPhone 14 / 15</option>
+            </select>
+        </div>
+
+        <div class="secao">
+            <label for="estilo">Estilo de Jogo</label>
+            <select id="estilo">
+                <option value="rush">Geral / Rush</option>
+                <option value="onetap">Armas de Um Tiro</option>
+            </select>
+        </div>
+
+        <button onclick="calcularSensi()">Gerar Sensibilidade</button>
+
+        <div class="resultado" id="resultadoCard">
+            <h3>Configuração Sugerida</h3>
+            <div class="linha-sensi">
+                <span>Geral:</span>
+                <span class="valor" id="resGeral">95</span>
+            </div>
+            <div class="linha-sensi">
+                <span>Ponto Vermelho:</span>
+                <span class="valor" id="resRedDot">93</span>
+            </div>
+            <div class="linha-sensi">
+                <span>Mira 2x:</span>
+                <span class="valor">96</span>
+            </div>
+            <div class="linha-sensi">
+                <span>Mira 4x:</span>
+                <span class="valor">100</span>
+            </div>
+            <div class="linha-sensi" style="margin-top: 10px; color: #a8a8b3; font-size: 0.9rem;">
+                <span>Botão de Atirar:</span>
+                <span style="color: #fff;" id="resBotao">47% a 53%</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Ajuste também o Controle Assistivo do iOS para 120 (Refinado).</p>
+    </footer>
+
+    <script>
+        /* INTERAÇÃO (JAVASCRIPT) */
+        function calcularSensi() {
+            const modelo = document.getElementById('modelo').value;
+            const estilo = document.getElementById('estilo').value;
+            
+            let geral = "95";
+            let redDot = "92";
+            let botao = "49%";
+
+            // Lógica de cálculo fictícia baseada nas opções
+            if (modelo === 'xr') {
+                geral = estilo === 'rush' ? '98' : '94';
+                redDot = '95';
+                botao = '47%';
+            } else if (modelo === '11') {
+                geral = estilo === 'rush' ? '95' : '91';
+                redDot = '93';
+                botao = '50%';
+            } else if (modelo === '12') {
+                geral = estilo === 'rush' ? '100' : '96';
+                redDot = '98';
+                botao = '45%';
+            } else {
+                geral = '92';
+                redDot = '90';
+                botao = '53%';
+            }
+
+            // Atualiza os textos na tela
+            document.getElementById('resGeral').innerText = geral;
+            document.getElementById('resRedDot').innerText = redDot;
+            document.getElementById('resBotao').innerText = botao;
+
+            // Mostra o card de resultado
+            document.getElementById('resultadoCard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
